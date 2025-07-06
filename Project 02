@@ -1,0 +1,30 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from mlxtend.frequent_patterns import apriori, association_rules
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+import pandas as pd
+
+df_encoded = pd.get_dummies(df, columns=df.columns)
+df_encoded
+
+frequent_itemsets = apriori(df_encoded, min_support=0.3, use_colnames=True)
+print(frequent_itemsets)
+
+for item in frequent_itemsets.iloc[90]:
+  print(item)
+
+num_itemsets = len(frequent_itemsets)
+rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.7, num_itemsets = num_itemsets)
+rules
+
+rules = rules.sort_values(by=['confidence', 'lift'], ascending=False)
+rules.head(10)
+
+top_10_rules = rules.sort_values(by=["confidence", "lift"], ascending=False).head(10)
+
+print(top_10_rules[['confidence', 'lift']])
